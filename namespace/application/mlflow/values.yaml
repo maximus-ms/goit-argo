@@ -53,7 +53,7 @@ minio:
   persistence:
     enabled: false
   provisioning:
-    enabled: false
+    enabled: true
 
 
 image:
