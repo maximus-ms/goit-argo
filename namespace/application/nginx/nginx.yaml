@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: Application
 metadata:
   name: demo-nginx
   namespace: application
