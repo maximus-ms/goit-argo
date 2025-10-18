@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://artifacthub.io/packages/helm/bitnami/mlflow
+    repoURL: https://community-charts.github.io/helm-charts
     chart: mlflow
-    targetRevision: 3.3.2-debian-12-r0
+    targetRevision: 1.6.2
     helm:
       valueFiles:
         - values/mlflow-values.yaml
