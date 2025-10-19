@@ -6,7 +6,7 @@ spec:
   destination:
     namespace: infra-tools
     server: "https://kubernetes.default.svc"
-  project: cluster-addons
+  project: default
   source:
     repoURL: https://grafana.github.io/helm-charts
     chart: loki-stack
