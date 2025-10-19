@@ -4,7 +4,7 @@ metadata:
   name: loki
 spec:
   destination:
-    namespace: infra-tools
+    namespace: application
     server: "https://kubernetes.default.svc"
   project: cluster-addons
   source:
