@@ -32,11 +32,6 @@ spec:
             serviceMonitorSelector: {}
             serviceMonitorSelectorNilUsesHelmValues: false
             retention: 2d
-          # scrape_configs:
-          #   - job_name: 'pushgateway'
-          #     honor_labels: true  # Important - preserves labels from Pushgateway
-          #     static_configs:
-          #       - targets: ['pushgateway.monitoring.svc.cluster.local:9091']
         kubelet:
           enabled: true
           serviceMonitor:
