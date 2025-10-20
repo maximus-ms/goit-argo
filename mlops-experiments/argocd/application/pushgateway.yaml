@@ -36,7 +36,7 @@ spec:
         
         # ServiceMonitor for Prometheus to automatically discover and scrape PushGateway
         serviceMonitor:
-          enabled: true
+          enabled: false
           namespace: monitoring
           
         # # Pod security context
