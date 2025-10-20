@@ -5,7 +5,7 @@ metadata:
   namespace: infra-tools
 spec:
   destination:
-    namespace: monitoring
+    namespace: infra-tools
     server: https://kubernetes.default.svc
   project: default
   source:
@@ -37,7 +37,7 @@ spec:
         # ServiceMonitor for Prometheus to automatically discover and scrape PushGateway
         serviceMonitor:
           enabled: true
-          namespace: monitoring
+          namespace: infra-tools
           
         # # Pod security context
         # podSecurityContext:
