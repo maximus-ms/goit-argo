@@ -1,65 +1,65 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: prometheus-pushgateway
-#   namespace: infra-tools
-# spec:
-#   destination:
-#     namespace: infra-tools
-#     server: https://kubernetes.default.svc
-#   project: default
-#   source:
-#     repoURL: https://prometheus-community.github.io/helm-charts
-#     chart: prometheus-pushgateway
-#     targetRevision: 3.4.1
-#     helm:
-#       valuesObject:
-#         # image:
-#         #   repository: prom/pushgateway
-#         #   tag: v1.6.2
-#         #   pullPolicy: IfNotPresent
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-pushgateway
+  namespace: infra-tools
+spec:
+  destination:
+    namespace: application
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus-pushgateway
+    targetRevision: 3.4.1
+    helm:
+      valuesObject:
+        # image:
+        #   repository: prom/pushgateway
+        #   tag: v1.6.2
+        #   pullPolicy: IfNotPresent
         
-#         # Service configuration
-#         service:
-#           type: ClusterIP
-#           port: 9091
-#           targetPort: 9091
+        # Service configuration
+        service:
+          type: ClusterIP
+          port: 9091
+          targetPort: 9091
         
-#         # # Resource limits
-#         # resources:
-#         #   limits:
-#         #     cpu: 200m
-#         #     memory: 256Mi
-#         #   requests:
-#         #     cpu: 100m
-#         #     memory: 128Mi
+        # # Resource limits
+        # resources:
+        #   limits:
+        #     cpu: 200m
+        #     memory: 256Mi
+        #   requests:
+        #     cpu: 100m
+        #     memory: 128Mi
         
-#         # ServiceMonitor for Prometheus to automatically discover and scrape PushGateway
-#         serviceMonitor:
-#           enabled: true
-#           namespace: infra-tools
+        # ServiceMonitor for Prometheus to automatically discover and scrape PushGateway
+        serviceMonitor:
+          enabled: true
+          namespace: application
           
-#         # # Pod security context
-#         # podSecurityContext:
-#         #   fsGroup: 65534
+        # # Pod security context
+        # podSecurityContext:
+        #   fsGroup: 65534
           
-#         # securityContext:
-#         #   runAsNonRoot: true
-#         #   runAsUser: 65534
+        # securityContext:
+        #   runAsNonRoot: true
+        #   runAsUser: 65534
           
-#         # Persistence configuration (disabled by default)
-#         # persistentVolume:
-#         #   enabled: false
+        # Persistence configuration (disabled by default)
+        # persistentVolume:
+        #   enabled: false
           
-#         # Metrics retention period
-#         # persistenceConfig:
-#         #   retention: "24h"
+        # Metrics retention period
+        # persistenceConfig:
+        #   retention: "24h"
           
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
-#       - ServerSideApply=true
-#       - SkipDryRunOnMissingResource=true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
