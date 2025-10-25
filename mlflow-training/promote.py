@@ -10,7 +10,7 @@ client = mlflow.tracking.MlflowClient()
 # Версія 1 → Production
 client.transition_model_version_stage(
     name="iris_rf_model",
-    version=2,
+    version=5,
     stage="Production"
 )
 
@@ -18,5 +18,5 @@ client.transition_model_version_stage(
 client.set_registered_model_alias(
     name="iris_rf_model",
     alias="champion",
-    version=2
+    version=5
 )

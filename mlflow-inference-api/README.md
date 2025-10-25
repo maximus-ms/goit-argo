@@ -9,7 +9,7 @@
 docker build -t inference-api .
 
 # Запуск контейнеру
-docker run -p 8080:8080 \
+docker run -p 8000:8080 \
   -e MLFLOW_TRACKING_URI=http://your-mlflow-server:5000 \
   -e MODEL_NAME=iris_rf_model \
   -e MODEL_STAGE=@champion \
@@ -35,7 +35,7 @@ aws ecr get-login-password \
   --region us-east-1 \
   --profile your-profile-name | \
 docker login --username AWS --password-stdin \
-  your-account-id.dkr.ecr.us-east-1.amazonaws.com
+   <your-account-id>.dkr.ecr.us-east-1.amazonaws.com
 ```
 
 ### 3. Збирання, тегування та публікація образу
@@ -46,11 +46,11 @@ docker build -t inference-api .
 
 # Тегування образу для ECR
 docker tag inference-api:latest \
-  your-account-id.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
+   <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
 
 # Публікація образу в ECR
 docker push \
-  your-account-id.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
+   <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
 ```
 
 ### 4. Перевірка наявності образу в репозиторії
@@ -82,22 +82,18 @@ helm install mlflow-inference ./
 
 ### 5. Підключення minikube до ECR репозиторіїв
 
-Увага! Підключення має бути на хості, на якому розміщено K8s (в нашому випадку `minikube`).
-
 #### 5.1. Створення секрету для автентифікації в ECR
 
 ```bash
 # Отримання токену автентифікації для ECR
-aws ecr get-login-password --region us-east-1 [ --profile your-profile-name ] | tee /tmp/aws-ecr.token
-
-TOKEN=`cat /tmp/aws-ecr.token`
+TOKEN=$(aws ecr get-login-password --region us-east-1 [ --profile your-profile-name ] )
 
 # Створення Kubernetes секрету для автентифікації в ECR
 kubectl create secret docker-registry ecr-secret \
-  --docker-server=your-account-id.dkr.ecr.us-east-1.amazonaws.com \
+  --docker-server=< <your-account-id>>.dkr.ecr.us-east-1.amazonaws.com \
   --docker-username=AWS \
   --docker-password=$TOKEN \
-  --namespace=default
+  --namespace=<default>
 ```
 
 #### 5.2. Використання секрету в deployment
@@ -138,7 +134,7 @@ spec:
               TOKEN=$(aws ecr get-login-password --region us-east-1)
               kubectl delete secret ecr-secret --ignore-not-found
               kubectl create secret docker-registry ecr-secret \
-                --docker-server=your-account-id.dkr.ecr.us-east-1.amazonaws.com \
+                --docker-server= <your-account-id>.dkr.ecr.us-east-1.amazonaws.com \
                 --docker-username=AWS \
                 --docker-password=$TOKEN
           restartPolicy: OnFailure
@@ -150,10 +146,10 @@ spec:
 
 ```bash
 # Спочатку отримайте образ локально
-docker pull your-account-id.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
+docker pull  <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
 
 # Пробкиньте образ в minikube
-minikube image load your-account-id.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
+minikube image load  <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
 ```
 
 Потім у deployment використовуйте imagePullPolicy: IfNotPresent:
@@ -164,6 +160,6 @@ spec:
     spec:
       containers:
       - name: inference-api
-        image: your-account-id.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
+        image:  <your-account-id>.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
         imagePullPolicy: IfNotPresent
 ```
