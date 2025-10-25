@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.service.name }}
+  labels:
+    app: {{ .Values.service.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.service.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.service.name }}
+    spec:
+      containers:
+        - name: inference
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          envFrom:
+            - secretRef:
+                name: mlflow-secrets
+          env:
+            - name: MLFLOW_TRACKING_URI
+              value: {{ .Values.env.MLFLOW_TRACKING_URI }}
+            - name: MODEL_NAME
+              value: {{ .Values.env.MODEL_NAME }}
+            - name: MODEL_STAGE
+              value: {{ .Values.env.MODEL_STAGE }}

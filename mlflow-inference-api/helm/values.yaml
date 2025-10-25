@@ -1,0 +1,21 @@
+replicaCount: 1
+
+image:
+  repository: 565493866235.dkr.ecr.us-east-1.amazonaws.com/inference-api
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  name: inference-api
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+env:
+  MLFLOW_TRACKING_URI: <http://mlflow.application.svc.cluster.local:5000>
+  MODEL_NAME: iris_rf_model
+  MODEL_STAGE: Production
+
+extraEnvFrom:
+  - secretRef:
+      name: mlflow-secrets
