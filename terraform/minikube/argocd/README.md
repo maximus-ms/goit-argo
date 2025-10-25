@@ -71,34 +71,33 @@ kubectl -n infra-tools get secret argocd-initial-admin-secret -o jsonpath="{.dat
 
 ## Git-репозиторій з Helm-деплоєм
 
-Створено git-репозиторій `goit-argo`
+Маємо git-репозиторій `goit-argo`
 
 [https://github.com/maximus-ms/goit-argo.git](https://github.com/maximus-ms/goit-argo.git)
 
-В репозиторії додано апплікації `demo-nginx` та `mlflow`
+В репозиторії додано апплікації `mlflow`, `minio`, та інші
 
 
 ### 2.1. Перевіримо порти цих апплікацій (використовуємо неймспейс `application`)
 ```bash
 kubectl get service -n application
 ```
-Отирмали вивід:
-```bash
-NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
-demo-nginx   ClusterIP   10.106.165.104   <none>        80/TCP    146m
-mlflow       ClusterIP   10.110.0.167     <none>        80/TCP    137m
-```
-### 2.2. Прокинемо порти до наших застосунків і перевіримо їх роботу в браузері
 
-**Nginx:**
-```bash
-kubectl port-forward -n application svc/demo-nginx 8800:80
-```
+### 2.2. Прокинемо порти до наших застосунків і перевіримо їх роботу в браузері
 
 **MLFlow:**
 ```bash
-kubectl port-forward -n application svc/mlflow 8880:80
+kubectl port-forward -n application svc/mlflow 5000
+kubectl port-forward -n application svc/minio 9000
+kubectl port-forward -n application svc/minio 9001   # for Web-GUI
 ```
 ```bash
 kubectl get service -A
+```
+
+### 2.3. Перевіримо секрети MLFlow
+
+```bash
+kubectl get secrets -n application
+kubectl describe secret mlflow-secrets -n application
 ```
