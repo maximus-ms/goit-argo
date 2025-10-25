@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@github.com:maximus-ms/goit-argo.git
+    repoURL: https://github.com/maximus-ms/goit-argo.git
     targetRevision: L11
     path: mlflow-inference-api/helm
     helm:
