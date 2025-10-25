@@ -39,3 +39,5 @@ spec:
           readinessProbe: {{ toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      imagePullSecrets:
+        - name: ecr-secret

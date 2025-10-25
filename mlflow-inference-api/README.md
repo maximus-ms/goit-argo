@@ -79,3 +79,91 @@ helm install mlflow-inference ./
 - `MLFLOW_TRACKING_URI` - URI для підключення до MLflow серверу
 - `MODEL_NAME` - назва зареєстрованої моделі в MLflow
 - `MODEL_STAGE` - аліас (@champion) або стадія (Production) моделі
+
+### 5. Підключення minikube до ECR репозиторіїв
+
+Увага! Підключення має бути на хості, на якому розміщено K8s (в нашому випадку `minikube`).
+
+#### 5.1. Створення секрету для автентифікації в ECR
+
+```bash
+# Отримання токену автентифікації для ECR
+aws ecr get-login-password --region us-east-1 [ --profile your-profile-name ] | tee /tmp/aws-ecr.token
+
+TOKEN=`cat /tmp/aws-ecr.token`
+
+# Створення Kubernetes секрету для автентифікації в ECR
+kubectl create secret docker-registry ecr-secret \
+  --docker-server=your-account-id.dkr.ecr.us-east-1.amazonaws.com \
+  --docker-username=AWS \
+  --docker-password=$TOKEN \
+  --namespace=default
+```
+
+#### 5.2. Використання секрету в deployment
+
+Додайте в `deployment.yaml` або в Helm-чарт:
+
+```yaml
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: ecr-secret
+```
+
+#### 5.3. Налаштування автоматичного оновлення токенів (опціонально)
+
+Токени ECR мають обмежений час дії (12 годин). Створіть CronJob для їх оновлення:
+
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ecr-token-refresh
+spec:
+  schedule: "0 */8 * * *"  # Кожні 8 годин
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: ecr-token-refresh-sa  # Сервісний акаунт з потрібними правами
+          containers:
+          - name: ecr-token-refresh
+            image: amazon/aws-cli:latest
+            command:
+            - /bin/sh
+            - -c
+            - |
+              TOKEN=$(aws ecr get-login-password --region us-east-1)
+              kubectl delete secret ecr-secret --ignore-not-found
+              kubectl create secret docker-registry ecr-secret \
+                --docker-server=your-account-id.dkr.ecr.us-east-1.amazonaws.com \
+                --docker-username=AWS \
+                --docker-password=$TOKEN
+          restartPolicy: OnFailure
+```
+
+#### 5.4. Альтернативний спосіб для minikube
+
+Для тестового середовища можна використати пробкидання образів (потребує ручного "затягування" нової версії іміджа):
+
+```bash
+# Спочатку отримайте образ локально
+docker pull your-account-id.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
+
+# Пробкиньте образ в minikube
+minikube image load your-account-id.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
+```
+
+Потім у deployment використовуйте imagePullPolicy: IfNotPresent:
+
+```yaml
+spec:
+  template:
+    spec:
+      containers:
+      - name: inference-api
+        image: your-account-id.dkr.ecr.us-east-1.amazonaws.com/inference-api:latest
+        imagePullPolicy: IfNotPresent
+```
