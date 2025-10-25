@@ -9,7 +9,8 @@ service:
   name: inference-api
   type: ClusterIP
   port: 80
-  targetPort: 8080
+  targetPort: 8000
+  annotations: {}
 
 env:
   MLFLOW_TRACKING_URI: <http://mlflow.application.svc.cluster.local:5000>
@@ -19,3 +20,36 @@ env:
 extraEnvFrom:
   - secretRef:
       name: mlflow-secrets
+
+resources:
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
+
+podLabels:
+  app: inference-api
+
+livenessProbe:
+  httpGet:
+    path: /docs
+    port: 8000
+  initialDelaySeconds: 15
+  periodSeconds: 20
+
+readinessProbe:
+  httpGet:
+    path: /docs
+    port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 15
+
+podAnnotations: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
