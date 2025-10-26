@@ -90,7 +90,7 @@ TOKEN=$(aws ecr get-login-password --region us-east-1 [ --profile your-profile-n
 
 # Створення Kubernetes секрету для автентифікації в ECR
 kubectl create secret docker-registry ecr-secret \
-  --docker-server=< <your-account-id>>.dkr.ecr.us-east-1.amazonaws.com \
+  --docker-server=<your-account-id>.dkr.ecr.us-east-1.amazonaws.com \
   --docker-username=AWS \
   --docker-password=$TOKEN \
   --namespace=<default>

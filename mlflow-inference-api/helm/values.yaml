@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: 565493866235.dkr.ecr.us-east-1.amazonaws.com/inference-api
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 service:
   name: inference-api
