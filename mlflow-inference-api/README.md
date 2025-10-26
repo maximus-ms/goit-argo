@@ -9,7 +9,7 @@
 docker build -t inference-api .
 
 # Запуск контейнеру
-docker run -p 8000:8080 \
+docker run -p 8000:8000 \
   -e MLFLOW_TRACKING_URI=http://your-mlflow-server:5000 \
   -e MODEL_NAME=iris_rf_model \
   -e MODEL_STAGE=@champion \
