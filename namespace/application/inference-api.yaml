@@ -9,9 +9,6 @@ spec:
     repoURL: https://github.com/maximus-ms/goit-argo.git
     targetRevision: L11
     path: mlflow-inference-api/helm
-    helm:
-      valuesFiles:
-        - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: application
